@@ -1,0 +1,6 @@
+# Credentials_Secrets_Dev
+config/config.py
+foo.db
+
+# pythonbyte code
+__pycache__
