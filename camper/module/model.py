@@ -16,13 +16,16 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(255))
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
+
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime())
-    roles = db.relationship('Role', secondary=roles_users,
-                            backref=db.backref('users', lazy='dynamic'))
 
-    def __str__(self):
-        return self.email
+    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+    comments = db.relationship('Comment', backref='user', lazy=True)
+    ranks = db.relationship('Rank', backref='user', lazy=True)
+
+    def __repr__(self):
+        return f'<User {self.id}'
 
 
 class Role(db.Model, RoleMixin):
@@ -30,19 +33,25 @@ class Role(db.Model, RoleMixin):
     name = db.Column(db.String(80), unique=True)
     description = db.Column(db.String(255))
 
-    def __str__(self):
-        return self.name
+    def __repr__(self):
+        return f'<Role {self.id}'
 
 
 class Trip(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
+    activities = db.relationship('Activity', backref='trip', lazy=True)
+    comments = db.relationship('Comment', backref='trip', lazy=True)
+    maps = db.relationship('Map', backref='trip', lazy=True)
+    
     def __repr__(self):
         return f'<Trip {self.id}'
 
 
 class Activity(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+
+    trip_id = db.Column(db.Integer, db.ForeignKey('trip.id'), nullable=False)
 
     def __repr__(self):
         return f'<Activity {self.id}'
@@ -51,6 +60,9 @@ class Activity(db.Model):
 class Comment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
+    trip_id = db.Column(db.Integer, db.ForeignKey('trip.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+
     def __repr__(self):
         return f'<Comment {self.id}'
 
@@ -58,12 +70,16 @@ class Comment(db.Model):
 class Map(db.Model):
     id = db.Column(db.Integer, primary_key=True)
 
+    trip_id = db.Column(db.Integer, db.ForeignKey('trip.id'), nullable=False)
+
     def __repr__(self):
         return f'<Map {self.id}'
 
 
 class Rank(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
         return f'<Rank {self.id}'
