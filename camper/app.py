@@ -50,6 +50,39 @@ class MyModelView(sqla.ModelView):
 def index():
     return render_template('index.html')
 
+@app.route('/user')
+def user():
+    return render_template('user.html')
+
+@app.route('/role')
+def role():
+    return render_template('role.html')
+
+@app.route('/trip')
+def trip():
+    return render_template('trip.html')
+
+@app.route('/activity')
+def activity():
+    return render_template('activity.html')
+
+@app.route('/comment')
+def comment():
+    return render_template('comment.html')
+
+@app.route('/map')
+def map():
+    return render_template('map.html')
+
+@app.route('/rank')
+def rank():
+    return render_template('rank.html')
+
+
+
+
+
+
 # Create admin
 admin = flask_admin.Admin(
     app,
