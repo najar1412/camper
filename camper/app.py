@@ -8,6 +8,7 @@ from flask_admin.contrib import sqla
 from flask_admin import helpers as admin_helpers
 
 import module.model
+import module.fakedata
 
 app = Flask(__name__)
 app.config.from_object('config')
@@ -46,13 +47,27 @@ class MyModelView(sqla.ModelView):
 
 
 # Flask views
+
+@app.route('/pop')
+def pop():
+    module.fakedata.fake_users(module.model.db)
+
+    return """populating db"""
+
+
 @app.route('/')
 def index():
-    return render_template('index.html')
+    users = module.query.User(module.model.db).all()
 
-@app.route('/user')
-def user():
-    return render_template('user.html')
+    return render_template('index.html', users=users)
+
+
+@app.route('/user/<int:id>')
+def user(id):
+    user_by_id = module.query.User(module.model.db).get(id)
+
+    return render_template('user.html', user=user_by_id)
+
 
 @app.route('/role')
 def role():
@@ -77,11 +92,6 @@ def map():
 @app.route('/rank')
 def rank():
     return render_template('rank.html')
-
-
-
-
-
 
 # Create admin
 admin = flask_admin.Admin(

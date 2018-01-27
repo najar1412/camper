@@ -23,9 +23,10 @@ class User(db.Model, UserMixin):
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
     comments = db.relationship('Comment', backref='user', lazy=True)
     ranks = db.relationship('Rank', backref='user', lazy=True)
+    planned_trips = db.relationship('Trip', backref='user', lazy=True)
 
     def __repr__(self):
-        return f'<User {self.id}'
+        return f'<User {self.id}>'
 
 
 class Role(db.Model, RoleMixin):
@@ -34,18 +35,20 @@ class Role(db.Model, RoleMixin):
     description = db.Column(db.String(255))
 
     def __repr__(self):
-        return f'<Role {self.id}'
+        return f'<Role {self.id}>'
 
 
 class Trip(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(120))
 
     activities = db.relationship('Activity', backref='trip', lazy=True)
     comments = db.relationship('Comment', backref='trip', lazy=True)
     maps = db.relationship('Map', backref='trip', lazy=True)
+    organizer_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     
     def __repr__(self):
-        return f'<Trip {self.id}'
+        return f'<Trip {self.id}>'
 
 
 class Activity(db.Model):
@@ -54,7 +57,7 @@ class Activity(db.Model):
     trip_id = db.Column(db.Integer, db.ForeignKey('trip.id'), nullable=False)
 
     def __repr__(self):
-        return f'<Activity {self.id}'
+        return f'<Activity {self.id}>'
 
 
 class Comment(db.Model):
@@ -64,7 +67,7 @@ class Comment(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f'<Comment {self.id}'
+        return f'<Comment {self.id}>'
 
 
 class Map(db.Model):
@@ -73,7 +76,7 @@ class Map(db.Model):
     trip_id = db.Column(db.Integer, db.ForeignKey('trip.id'), nullable=False)
 
     def __repr__(self):
-        return f'<Map {self.id}'
+        return f'<Map {self.id}>'
 
 
 class Rank(db.Model):
@@ -82,4 +85,4 @@ class Rank(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):
-        return f'<Rank {self.id}'
+        return f'<Rank {self.id}>'

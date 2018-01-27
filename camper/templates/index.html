@@ -5,6 +5,17 @@
     <a href="{{ url_for('admin.index') }}">Go to admin!</a>
 </div>
 
+<hr>
 
+{% for user_id, user_data in users.items() %}
+<div>
+    <div>{{user_id}}</div><br>
+    <div>{{user_data}}</div>
+</div>
+<br>
+<br>
+{% endfor %}
+
+<hr>
 
 {% endblock %}
